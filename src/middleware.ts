@@ -1,26 +1,25 @@
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 
-export async function middleware(req: NextRequest) {
-    const token = req.cookies.get("token")?.value || req.headers.get("authorization")?.split(" ")[1];
-    const JWT_SECRET = process.env.JWT_SECRET!;
+export function middleware(req: NextRequest) {
+    // You can still protect API routes here if needed
+    if (req.nextUrl.pathname.startsWith("/api/admin")) {
+        const token =
+            req.cookies.get("token")?.value ||
+            req.headers.get("authorization")?.split(" ")[1];
 
-    // Protect all /admin routes
-    if (req.nextUrl.pathname.startsWith("/admin")) {
         if (!token) {
-            return NextResponse.redirect(new URL("/login", req.url));
-        }
-        try {
-            jwt.verify(token, JWT_SECRET);
-            return NextResponse.next();
-        } catch (err) {
-            return NextResponse.redirect(new URL("/login", req.url));
+            return NextResponse.json(
+                { success: false, message: "Unauthorized" },
+                { status: 401 }
+            );
         }
     }
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/admin/:path*"], // Apply only to /admin routes
+    matcher: ["/api/admin/:path*"], // Only protect backend APIs
 };
