@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Loader2, Filter, Search, Newspaper } from "lucide-react";
+import { Loader2, Search, Newspaper } from "lucide-react";
 import { debounce } from "lodash";
 
 interface NewsItem {
@@ -14,7 +14,7 @@ interface NewsItem {
     title: string;
     content: string;
     image?: string;
-    video?: string;
+    youtubeVideoId?: string;
     createdAt: string;
     slug: string;
 }
@@ -32,6 +32,11 @@ export default function NewsPage() {
         fetchNews();
     }, [page]);
 
+    useEffect(() => {
+        fetchNews(search);
+    }, [page, search]);
+
+
     const fetchNews = async (query = "") => {
         setLoading(true);
         try {
@@ -40,8 +45,10 @@ export default function NewsPage() {
                 : `/api/news?page=${page}&limit=${limit}`;
             const res = await axios.get(url);
             setNews(res.data.data || []);
+            console.log("hello")
             setFiltered(res.data.data || []);
-            setTotal(res.data.total || 0);
+            setPage(res.data.page || 1);
+            setTotal(res.data.totalPages || 0);
         } catch (err) {
             console.error(err);
         } finally {
@@ -67,9 +74,6 @@ export default function NewsPage() {
         debouncedSearch(val);
     };
 
-
-    const totalPages = Math.ceil(total / limit);
-
     return (
         <div className="min-h-screen bg-linear-to-b from-background to-muted text-foreground p-6 transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
@@ -79,7 +83,7 @@ export default function NewsPage() {
                         <Newspaper className="w-6 h-6 text-primary" />
                         <h1 className="text-2xl md:text-3xl font-bold">Latest News</h1>
                     </div>
-                    <div className="flex gap-2 w-full md:w-auto">
+                    <div className="flex gap-2 w-full md:w-1/3">
                         <Input
                             type="text"
                             placeholder="Search news..."
@@ -87,9 +91,6 @@ export default function NewsPage() {
                             onChange={handleSearch}
                             className="dark:bg-muted bg-white"
                         />
-                        <Button variant="outline" className="flex items-center gap-2">
-                            <Filter className="w-4 h-4" /> Filter
-                        </Button>
                     </div>
                 </div>
 
@@ -114,20 +115,31 @@ export default function NewsPage() {
                                     transition={{ delay: index * 0.05 }}
                                 >
                                     <Card className="overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-card dark:bg-muted/60">
-                                        {item.image && (
+                                        {/* 🖼️ Image or Video */}
+                                        {item.image ? (
                                             <img
                                                 src={item.image}
                                                 alt={item.title}
                                                 className="w-full h-48 object-cover"
                                             />
+                                        ) : item.youtubeVideoId ? (
+                                            <iframe
+                                                className="w-full h-48"
+                                                src={`https://www.youtube.com/embed/${item.youtubeVideoId}`}
+                                                title={item.title}
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+                                        ) : (
+                                            <div className="w-full h-48 bg-muted flex items-center justify-center text-gray-500 text-sm italic">
+                                                Image not available
+                                            </div>
                                         )}
+
+                                        {/* 📰 Card Content */}
                                         <CardContent className="p-4 flex flex-col gap-2">
-                                            <h2 className="font-semibold text-lg line-clamp-2">
-                                                {item.title}
-                                            </h2>
-                                            <p className="text-sm text-muted-foreground line-clamp-3">
-                                                {item.content}
-                                            </p>
+                                            <h2 className="font-semibold text-lg line-clamp-2">{item.title}</h2>
+                                            <p className="text-sm text-muted-foreground line-clamp-3">{item.content}</p>
                                             <p className="text-xs text-right text-muted-foreground mt-2">
                                                 {new Date(item.createdAt).toLocaleString("en-IN", {
                                                     day: "2-digit",
@@ -146,6 +158,7 @@ export default function NewsPage() {
                                             </Button>
                                         </CardContent>
                                     </Card>
+
                                 </motion.div>
                             ))}
                         </div>
@@ -159,12 +172,12 @@ export default function NewsPage() {
                             >
                                 ← Prev
                             </Button>
-                            <span className="text-sm text-muted-foreground">
-                                Page {page} of {totalPages || 1}
+                            <span className="text-sm text-muted-foreground flex items-center">
+                                Page {page} of {total || 1}
                             </span>
                             <Button
                                 variant="outline"
-                                disabled={page === totalPages}
+                                disabled={page === total}
                                 onClick={() => setPage((p) => p + 1)}
                             >
                                 Next →

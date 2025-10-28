@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
 import News from "@/models/News";
 import jwt from "jsonwebtoken";
+import { slugify } from "transliteration";
 
 export const dynamic = "force-dynamic"; // ensures fresh data on each request
 
@@ -40,7 +41,6 @@ export async function GET(req: NextRequest) {
     }
 }
 
-
 // ✅ POST — Create a new news post (admin only)
 export async function POST(req: NextRequest) {
     try {
@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
         }
 
-        // Verify JWT
         try {
             jwt.verify(token, process.env.JWT_SECRET!);
         } catch {
@@ -61,7 +60,6 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         let { title, slug, content, image, youtubeVideoId } = body;
 
-        // ✅ Either image or YouTube link must be provided
         if (!title || !content || (!image && !youtubeVideoId)) {
             return NextResponse.json(
                 { success: false, message: "Missing required fields (title, content, and either image or YouTube URL)" },
@@ -69,24 +67,36 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // 🧩 Auto-generate slug if not provided
+        // 🧩 Unicode-safe slug generation (preserves Hindi matras)
         if (!slug) {
             slug = title
-                .toLowerCase()
                 .trim()
-                .replace(/[^a-z0-9\s-]/g, "")
-                .replace(/\s+/g, "-")
-                .replace(/-+/g, "-");
+                .replace(/[^\p{L}\p{N}\s-]/gu, "") // keep letters, digits, spaces, hyphens
+                .replace(/\s+/g, "-") // spaces → hyphens
+                .replace(/-+/g, "-") // collapse multiple hyphens
+                .toLowerCase();
         }
 
-        // 🧩 Ensure slug uniqueness
+        // if (!slug) {
+        //     // Use slugify with Unicode mode
+        //     slug = slugify(title, {
+        //         replacement: "-", // replace spaces with hyphen
+        //         remove: /[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]/g, // remove only unsafe URL chars
+        //         lower: false, // don’t lowercase to avoid Unicode issues
+        //         strict: false, // keep Unicode characters intact
+        //         locale: "hi", // optional, helps for Hindi text
+        //         trim: true,
+        //     } as any);
+        // }
+
+        // 🧩 Ensure unique slug
         let uniqueSlug = slug;
         let counter = 1;
         while (await News.findOne({ slug: uniqueSlug })) {
             uniqueSlug = `${slug}-${counter++}`;
         }
 
-        // ✅ Extract YouTube video ID if full URL is provided
+        // ✅ Extract YouTube video ID if full URL provided
         if (youtubeVideoId) {
             const match = youtubeVideoId.match(
                 /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=))([\w-]{11})/
@@ -111,4 +121,3 @@ export async function POST(req: NextRequest) {
         );
     }
 }
-
