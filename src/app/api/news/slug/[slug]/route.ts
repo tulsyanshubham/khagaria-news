@@ -124,28 +124,28 @@ export async function GET(
 // }
 
 // DELETE → Delete post (admin only)
-export async function DELETE(
-    req: Request,
-    context: { params: Promise<{ slug: string }> }
-) {
-    const { slug } = await context.params; // 👈 FIXED HERE
-    const token = req.headers.get("authorization")?.split(" ")[1];
+// export async function DELETE(
+//     req: Request,
+//     context: { params: Promise<{ slug: string }> }
+// ) {
+//     const { slug } = await context.params; // 👈 FIXED HERE
+//     const token = req.headers.get("authorization")?.split(" ")[1];
 
-    if (!token)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     if (!token)
+//         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    try {
-        jwt.verify(token, JWT_SECRET);
-        await dbConnect();
+//     try {
+//         jwt.verify(token, JWT_SECRET);
+//         await dbConnect();
 
-        const deleted = await News.findOneAndDelete({ slug });
+//         const deleted = await News.findOneAndDelete({ slug });
 
-        if (!deleted)
-            return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
+//         if (!deleted)
+//             return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
 
-        return NextResponse.json({ success: true, message: "Deleted successfully" });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ success: false, error: "Server error" }, { status: 500 });
-    }
-}
+//         return NextResponse.json({ success: true, message: "Deleted successfully" });
+//     } catch (error) {
+//         console.error(error);
+//         return NextResponse.json({ success: false, error: "Server error" }, { status: 500 });
+//     }
+// }

@@ -92,3 +92,30 @@ export async function PUT(
         );
     }
 }
+
+export async function DELETE(
+    req: Request,
+    context: { params: Promise<{ id: string }> } // 1. Use 'id' from params
+) {
+    const { id } = await context.params; // 2. Destructure 'id'
+    const token = req.headers.get("authorization")?.split(" ")[1];
+
+    if (!token)
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    try {
+        jwt.verify(token, JWT_SECRET);
+        await dbConnect();
+
+        // 3. Use findByIdAndDelete with the 'id'
+        const deleted = await News.findByIdAndDelete(id); 
+
+        if (!deleted)
+            return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
+
+        return NextResponse.json({ success: true, message: "Deleted successfully" });
+    } catch (error) {
+        console.error("DELETE /api/news/[id] error:", error);
+        return NextResponse.json({ success: false, error: "Server error" }, { status: 500 });
+    }
+}

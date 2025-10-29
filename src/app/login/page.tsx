@@ -46,7 +46,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background via-muted to-background">
+        <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-background via-muted to-background">
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
