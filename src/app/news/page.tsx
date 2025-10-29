@@ -3,12 +3,11 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Search, Newspaper, Calendar, Filter, Play, Eye, NotebookText } from "lucide-react";
+import { Loader2, Search, Newspaper, NotebookText } from "lucide-react";
 import { debounce } from "lodash";
 import NewsCards from "@/components/NewsCards";
 
