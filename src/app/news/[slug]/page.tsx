@@ -30,7 +30,7 @@ export default function NewsDetailPage() {
     const fetchNews = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`/api/news/${slug}`);
+            const res = await axios.get(`/api/news/slug/${slug}`);
             setNews(res.data.news);
 
             // fetch related news

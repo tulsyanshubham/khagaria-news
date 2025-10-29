@@ -5,9 +5,10 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Edit2, Trash2, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Loader2, Edit2, Trash2, ChevronLeft, ChevronRight, X, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface NewsItem {
     _id: string;
@@ -20,6 +21,7 @@ interface NewsItem {
 }
 
 export default function ManageNewsPage() {
+    const router = useRouter();
     const [news, setNews] = useState<NewsItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState<string | null>(null);
@@ -70,7 +72,7 @@ export default function ManageNewsPage() {
 
         const item = deleteModal.item;
         setDeleting(item._id);
-        
+
         try {
             // Get token from localStorage
             const token = localStorage.getItem("token");
@@ -85,17 +87,17 @@ export default function ManageNewsPage() {
                     "Authorization": `Bearer ${token}`
                 }
             });
-            
+
             toast.success("Article deleted successfully");
-            
+
             // Remove from frontend array
             setNews((prev) => prev.filter((n) => n._id !== item._id));
-            
+
             // If this was the last item on the page and not page 1, go to previous page
             if (news.length === 1 && page > 1) {
                 setPage(page - 1);
             }
-            
+
             closeDeleteModal();
         } catch (error: any) {
             console.error("Error deleting article:", error);
@@ -120,6 +122,11 @@ export default function ManageNewsPage() {
         );
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        router.replace("/login");
+    }
+
     return (
         <div className="min-h-screen bg-background text-foreground px-6 py-10">
             <div className="max-w-6xl mx-auto">
@@ -136,11 +143,16 @@ export default function ManageNewsPage() {
                             View, edit, or delete existing news articles.
                         </p>
                     </div>
-                    <Link href="/admin/news/create">
-                        <Button className="bg-primary text-white hover:bg-primary/90">
-                            + Create New Article
+                    <div className="flex gap-3">
+                        <Link href="/admin/news/create">
+                            <Button className="bg-primary text-white hover:bg-primary/90">
+                                + Create New Article
+                            </Button>
+                        </Link>
+                        <Button onClick={handleLogout} variant="destructive" className="text-white hover:bg-primary/90">
+                            <LogOut className="w-4 h-4" /> Logout
                         </Button>
-                    </Link>
+                    </div>
                 </motion.div>
 
                 {/* Grid */}
@@ -271,12 +283,12 @@ export default function ManageNewsPage() {
                                     <X className="w-4 h-4" />
                                 </Button>
                             </div>
-                            
+
                             <p className="text-muted-foreground mb-6">
-                                Are you sure you want to delete <strong>"{deleteModal.item.title}"</strong>? 
+                                Are you sure you want to delete <strong>"{deleteModal.item.title}"</strong>?
                                 This action cannot be undone.
                             </p>
-                            
+
                             <div className="flex gap-3 justify-end">
                                 <Button
                                     variant="outline"
