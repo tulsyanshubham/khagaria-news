@@ -63,7 +63,7 @@ export default function NewsDetailPage() {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[60vh]">
-                <Loader2 className="animate-spin w-8 h-8 text-primary" />
+                <Loader2 className="animate-spin w-16 h-16 text-primary" />
             </div>
         );
     }
@@ -77,7 +77,7 @@ export default function NewsDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background via-muted to-background text-foreground transition-colors duration-300 p-6">
+        <div className="min-h-screen bg-linear-to-b from-background via-muted to-background text-foreground transition-colors duration-300 p-6">
             <div className="max-w-4xl mx-auto">
                 {/* Back button */}
                 <Button
@@ -96,13 +96,7 @@ export default function NewsDetailPage() {
                     <Card className="overflow-hidden shadow-xl border-0 bg-card/80 dark:bg-muted/60 backdrop-blur-md py-2">
                         {/* Image / Video (16:9 responsive) */}
                         <div className="relative w-full aspect-video rounded-t-lg overflow-hidden bg-muted">
-                            {news.image ? (
-                                <img
-                                    src={news.image}
-                                    alt={news.title}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                />
-                            ) : news.youtubeVideoId ? (
+                            {news.youtubeVideoId ? (
                                 <iframe
                                     className="absolute inset-0 w-full h-full"
                                     src={`https://www.youtube.com/embed/${news.youtubeVideoId}`}
@@ -110,6 +104,12 @@ export default function NewsDetailPage() {
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 ></iframe>
+                            ) : news.image ? (
+                                <img
+                                    src={news.image}
+                                    alt={news.title}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm italic bg-muted">
                                     Image not available
@@ -121,7 +121,7 @@ export default function NewsDetailPage() {
                         {/* Content */}
                         <CardContent className="p-8">
                             <motion.h1
-                                className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent leading-snug"
+                                className="text-3xl md:text-4xl font-extrabold tracking-tight bg-linear-to-r from-primary to-blue-500 bg-clip-text text-transparent leading-snug"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}

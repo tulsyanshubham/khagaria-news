@@ -6,7 +6,6 @@ export interface INews extends Document {
     content: string;
     image?: string;
     youtubeVideoId?: string;
-    createdAt: Date;
 }
 
 const NewsSchema: Schema<INews> = new Schema(

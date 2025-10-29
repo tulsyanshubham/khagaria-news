@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { Loader2, Search, Newspaper } from "lucide-react";
 import { debounce } from "lodash";
+import NewsCards from "@/components/NewsCards";
 
 interface NewsItem {
     _id: string;
@@ -97,7 +98,7 @@ export default function NewsPage() {
                 {/* Loader */}
                 {loading ? (
                     <div className="flex justify-center items-center h-[50vh]">
-                        <Loader2 className="animate-spin w-8 h-8 text-primary" />
+                        <Loader2 className="animate-spin w-16 h-16 text-primary" />
                     </div>
                 ) : filtered.length === 0 ? (
                     <div className="flex justify-center items-center h-[50vh]">
@@ -106,62 +107,7 @@ export default function NewsPage() {
                 ) : (
                     <>
                         {/* Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filtered.map((item, index) => (
-                                <motion.div
-                                    key={item._id}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                >
-                                    <Card className="overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-card dark:bg-muted/60">
-                                        {/* 🖼️ Image or Video */}
-                                        {item.image ? (
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
-                                                className="w-full h-48 object-cover"
-                                            />
-                                        ) : item.youtubeVideoId ? (
-                                            <iframe
-                                                className="w-full h-48"
-                                                src={`https://www.youtube.com/embed/${item.youtubeVideoId}`}
-                                                title={item.title}
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                            ></iframe>
-                                        ) : (
-                                            <div className="w-full h-48 bg-muted flex items-center justify-center text-gray-500 text-sm italic">
-                                                Image not available
-                                            </div>
-                                        )}
-
-                                        {/* 📰 Card Content */}
-                                        <CardContent className="p-4 flex flex-col gap-2">
-                                            <h2 className="font-semibold text-lg line-clamp-2">{item.title}</h2>
-                                            <p className="text-sm text-muted-foreground line-clamp-3">{item.content}</p>
-                                            <p className="text-xs text-right text-muted-foreground mt-2">
-                                                {new Date(item.createdAt).toLocaleString("en-IN", {
-                                                    day: "2-digit",
-                                                    month: "short",
-                                                    year: "numeric",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
-                                            </p>
-                                            <Button
-                                                variant="link"
-                                                className="text-primary font-medium w-fit mt-1 p-0"
-                                                onClick={() => (window.location.href = `/news/${item.slug}`)}
-                                            >
-                                                Read More →
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-
-                                </motion.div>
-                            ))}
-                        </div>
+                        <NewsCards data={filtered} />
 
                         {/* Pagination */}
                         <div className="flex justify-center mt-8 gap-4">
