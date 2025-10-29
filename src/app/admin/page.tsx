@@ -116,7 +116,7 @@ export default function ManageNewsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 flex justify-center items-center">
+            <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 flex justify-center items-center">
                 <div className="text-center space-y-4">
                     <Loader2 className="w-16 h-16 animate-spin text-primary mx-auto" />
                     <p className="text-muted-foreground font-medium">Loading articles...</p>
@@ -126,7 +126,7 @@ export default function ManageNewsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header Section */}
                 <motion.div
@@ -141,7 +141,7 @@ export default function ManageNewsPage() {
                                 <div className="p-2 bg-primary/10 rounded-lg">
                                     <FileText className="w-6 h-6 text-primary" />
                                 </div>
-                                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                                <h1 className="text-3xl lg:text-4xl font-bold bg-linear-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                                     News Management
                                 </h1>
                             </div>
@@ -160,7 +160,7 @@ export default function ManageNewsPage() {
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <Link href="/admin/news/create" className="sm:w-auto w-full">
-                                <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 group">
+                                <Button className="w-full sm:w-auto bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 group">
                                     <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                                     Create Article
                                 </Button>
@@ -216,7 +216,7 @@ export default function ManageNewsPage() {
                                         <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm overflow-hidden h-full flex flex-col">
                                             {/* Image/Video Section */}
                                             <div 
-                                                className="relative aspect-video bg-gradient-to-br from-muted/50 to-muted overflow-hidden"
+                                                className="relative aspect-video bg-linear-to-br from-muted/50 to-muted overflow-hidden"
                                                 onMouseEnter={() => item.youtubeVideoId && setHoveredVideo(item._id)}
                                                 onMouseLeave={() => setHoveredVideo(null)}
                                             >
@@ -239,7 +239,7 @@ export default function ManageNewsPage() {
                                                         />
                                                         {/* Overlay that disappears on hover to allow video interaction */}
                                                         <div 
-                                                            className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-300 ${
+                                                            className={`absolute inset-0 bg-linear-to-t from-black/30 to-transparent transition-opacity duration-300 ${
                                                                 hoveredVideo === item._id ? 'opacity-0 pointer-events-none' : 'opacity-100'
                                                             }`}
                                                         />
@@ -253,13 +253,13 @@ export default function ManageNewsPage() {
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <div className="flex items-center justify-center h-full bg-gradient-to-br from-muted to-muted/50">
+                                                    <div className="flex items-center justify-center h-full bg-linear-to-br from-muted to-muted/50">
                                                         <FileText className="w-12 h-12 text-muted-foreground/50" />
                                                     </div>
                                                 )}
                                                 {/* Hover overlay for non-video content */}
                                                 {!item.youtubeVideoId && (
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                                    <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                                 )}
                                             </div>
 
@@ -285,7 +285,7 @@ export default function ManageNewsPage() {
                                                     </div>
 
                                                     <div className="flex gap-2">
-                                                        <Link href={`/admin/news/edit/${item.slug}`}>
+                                                        <Link href={`/admin/news/edit/${item._id}`}>
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
@@ -420,7 +420,7 @@ export default function ManageNewsPage() {
                                             variant="destructive"
                                             onClick={handleDelete}
                                             disabled={deleting !== null}
-                                            className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-200"
+                                            className="flex-1 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-200"
                                         >
                                             {deleting ? (
                                                 <>

@@ -1,11 +1,22 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Newspaper } from "lucide-react";
+import Link from "next/link";
+import { useState, useEffect } from "react"; 
+import { usePathname } from "next/navigation"; // Add this back
 
 export default function Navbar() {
-    const pathname = usePathname();
+    const pathname = usePathname(); // Use usePathname hook instead
+    const [isScrolled, setIsScrolled] = useState(false); 
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 0);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []); 
 
     const navItems = [
         { name: "Home", href: "/" },
@@ -13,7 +24,14 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-white/10 backdrop-blur-md bg-linear-gradient-to-r from-primary/10 via-background/60 to-primary/10 shadow-lg">
+        <nav 
+            className={cn(
+                "sticky top-0 z-50 w-full transition-all duration-300", 
+                isScrolled 
+                    ? "border-b border-white/10 backdrop-blur-md bg-linear-gradient-to-r from-primary/10 via-background/60 to-primary/10 shadow-lg" 
+                    : "border-b border-transparent bg-transparent" 
+            )}
+        >
             <div className="max-w-6xl mx-auto flex justify-between items-center px-5 py-4">
 
                 {/* Logo Section */}
@@ -34,7 +52,7 @@ export default function Navbar() {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "relative text-base font-medium transition-colors duration-300 hover:text-primary",
+                                    "relative text-lg font-medium transition-colors duration-300 hover:text-primary",
                                     active ? "text-primary" : "text-muted-foreground"
                                 )}
                             >
@@ -50,11 +68,6 @@ export default function Navbar() {
                         );
                     })}
                 </div>
-
-                {/* Optional Theme Switch (future enhancement) */}
-                {/* <Button variant="ghost" size="icon">
-          <SunMoonIcon className="w-5 h-5" />
-        </Button> */}
             </div>
         </nav>
     );

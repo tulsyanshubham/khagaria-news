@@ -5,6 +5,7 @@ import { Card, CardContent } from './ui/card'
 import { Badge } from './ui/badge'
 import { motion } from "framer-motion";
 import { Calendar, Play, ExternalLink } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type newsObj = {
     _id: string;
@@ -17,14 +18,15 @@ type newsObj = {
 }
 
 export default function NewsCards({ data }: { data: newsObj[] }) {
+    const router = useRouter();
     const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
 
     const handleReadMore = (slug: string) => {
-        window.location.href = `/news/${slug}`;
+        router.push(`/news/${slug}`);
     };
 
     const handleCardClick = (slug: string) => {
-        window.location.href = `/news/${slug}`;
+        router.push(`/news/${slug}`);
     };
 
     return (

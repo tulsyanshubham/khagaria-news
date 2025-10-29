@@ -19,19 +19,19 @@ type NewsPost = {
 
 export default function EditNewsPage() {
     const router = useRouter();
-    const { slug } = useParams();
+    const { id } = useParams();
 
     const [post, setPost] = useState<NewsPost | null>(null);
     const [pageLoading, setPageLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (!slug) return;
+        if (!id) return;
 
         const fetchPost = async () => {
             setPageLoading(true);
             try {
-                const res = await fetch(`/api/news/slug/${slug}`, {
+                const res = await fetch(`/api/news/${id}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
@@ -41,7 +41,7 @@ export default function EditNewsPage() {
                     const data = await res.json();
                     // ✅ CORRECTION HERE: Changed data.post to data.news
                     // This matches your API response: { success: true, news: post }
-                    setPost(data.news);
+                    setPost({...data.news, youtubeVideoId: data.news.youtubeVideoId? `https://youtu.be/${data.news.youtubeVideoId}` : ""});
                 } else {
                     toast.error("Failed to fetch news article.");
                     router.push("/admin");
@@ -55,7 +55,7 @@ export default function EditNewsPage() {
         };
 
         fetchPost();
-    }, [slug, router]);
+    }, [id, router]);
 
     const handleUpdateSubmit = async (payload: NewsFormData) => {
         setIsSubmitting(true);

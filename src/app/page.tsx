@@ -69,16 +69,16 @@ export default function HomePage() {
               Stay Informed, Stay Ahead
             </Badge>
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
             Your Daily Dose of{" "}
             <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               News
             </span>
           </h1>
-          
+
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Explore the latest stories, technology breakthroughs, and trending updates — 
+            Explore the latest stories, technology breakthroughs, and trending updates —
             all curated to keep you informed and inspired.
           </p>
 
@@ -116,7 +116,7 @@ export default function HomePage() {
               <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm overflow-hidden">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                   {/* Image/Video Section */}
-                  <div 
+                  <div
                     className="relative aspect-video lg:aspect-square overflow-hidden"
                     onMouseEnter={() => featured.youtubeVideoId && setHoveredVideo('featured')}
                     onMouseLeave={() => setHoveredVideo(null)}
@@ -131,9 +131,8 @@ export default function HomePage() {
                         <img
                           src={featured.image}
                           alt={featured.title}
-                          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${
-                            imageLoading ? 'opacity-0' : 'opacity-100'
-                          }`}
+                          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${imageLoading ? 'opacity-0' : 'opacity-100'
+                            }`}
                           onLoad={() => setImageLoading(false)}
                         />
                       </>
@@ -149,14 +148,12 @@ export default function HomePage() {
                           loading="lazy"
                         />
                         {/* Overlay that disappears on hover to allow video interaction */}
-                        <div 
-                          className={`absolute inset-0 bg-linear-to-r from-black/30 to-transparent transition-opacity duration-300 ${
-                            hoveredVideo === 'featured' ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                          }`}
+                        <div
+                          className={`absolute inset-0 bg-linear-to-r from-black/30 to-transparent transition-opacity duration-300 ${hoveredVideo === 'featured' ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                            }`}
                         />
-                        <div className={`absolute top-4 left-4 transition-opacity duration-300 ${
-                          hoveredVideo === 'featured' ? 'opacity-0' : 'opacity-100'
-                        }`}>
+                        <div className={`absolute top-4 left-4 transition-opacity duration-300 ${hoveredVideo === 'featured' ? 'opacity-0' : 'opacity-100'
+                          }`}>
                           <Badge variant="destructive" className="bg-red-600 hover:bg-red-700">
                             <Play className="w-3 h-3 mr-1" />
                             Watch Video
@@ -200,7 +197,7 @@ export default function HomePage() {
                           year: "numeric",
                         })}
                       </div>
-                      
+
                       <Button
                         onClick={() => (window.location.href = `/news/${featured.slug}`)}
                         className="bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
@@ -237,7 +234,7 @@ export default function HomePage() {
                     Discover more engaging content and stay up to date
                   </p>
                 </div>
-                
+
                 <Button
                   onClick={() => (window.location.href = "/news")}
                   variant="outline"
