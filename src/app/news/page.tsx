@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Search, Newspaper, Calendar, Filter, Play, Eye } from "lucide-react";
+import { Loader2, Search, Newspaper, Calendar, Filter, Play, Eye, NotebookText } from "lucide-react";
 import { debounce } from "lodash";
 import NewsCards from "@/components/NewsCards";
 
@@ -195,7 +195,7 @@ export default function NewsPage() {
                                     {search && ` for "${search}"`}
                                 </p>
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Filter className="w-4 h-4" />
+                                    <NotebookText className="w-4 h-4" />
                                     Page {page} of {total}
                                 </div>
                             </div>
