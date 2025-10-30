@@ -29,7 +29,7 @@ export default function Navbar() {
                 "fixed top-0 z-50 w-full transition-all duration-200", 
                 isScrolled 
                     ? "border-b border-white/10 backdrop-blur-md bg-linear-gradient-to-r from-primary/10 via-background/60 to-primary/10 shadow-lg" 
-                    : "bg-transparent p-2" 
+                    : "bg-transparent py-2" 
             )}
         >
             <div className="max-w-6xl mx-auto flex justify-between items-center px-5 py-4">
@@ -52,7 +52,7 @@ export default function Navbar() {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "relative text-lg font-medium transition-colors duration-300 hover:text-primary",
+                                    "relative text-base sm:text-lg font-medium transition-colors duration-300 hover:text-primary",
                                     active ? "text-primary" : "text-muted-foreground"
                                 )}
                             >

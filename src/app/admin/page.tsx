@@ -158,10 +158,10 @@ export default function ManageNewsPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-row gap-3">
+                        <div className="flex flex-row justify-center gap-3">
                             <Button
                                 onClick={() => { router.push("/admin/news/create") }}
-                                className="w-1/2 sm:w-auto bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:text-black shadow-lg hover:shadow-xl transition-all duration-300 group"
+                                className="min-w-1/3 sm:w-auto bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:text-black shadow-lg hover:shadow-xl transition-all duration-300 group"
                             >
                                 <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
                                 <span className="mr-2">Create New</span>
@@ -169,7 +169,7 @@ export default function ManageNewsPage() {
                             <Button
                                 onClick={handleLogout}
                                 variant="outline"
-                                className="w-1/2 sm:w-auto border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
+                                className="min-w-1/3 sm:w-auto border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
                             >
                                 <LogOut className="w-4 h-4 mr-2" />
                                 <span>Logout</span>
