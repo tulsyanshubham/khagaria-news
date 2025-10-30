@@ -40,7 +40,7 @@ export default function Navbar() {
                     className="flex items-center gap-2 text-xl font-bold text-primary hover:text-primary/80 transition-colors"
                 >
                     <Newspaper className="w-6 h-6" />
-                    <span>Khagaria News</span>
+                    <span>Khagaria News 18</span>
                 </Link>
 
                 {/* Navigation Links */}
