@@ -1,8 +1,9 @@
 // page.tsx
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import axios from "axios";
+import { useAtom, useSetAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -10,52 +11,91 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Search, Newspaper, NotebookText } from "lucide-react";
 import { debounce } from "lodash";
 import NewsCards from "@/components/NewsCards";
-
-interface NewsItem {
-    _id: string;
-    title: string;
-    content: string;
-    image?: string;
-    youtubeVideoId?: string;
-    createdAt: string;
-    slug: string;
-}
+import {
+    newsAtom,
+    setNewsAtom,
+    filteredNewsAtom,
+    loadingAtom,
+    pageAtom,
+    searchAtom,
+    totalPagesAtom,
+    totalItemsAtom,
+    updatePaginationCacheAtom,
+    getFromCacheAtom,
+    generateCacheKey,
+    type NewsItem
+} from "../stores/newsStore";
 
 export default function NewsPage() {
-    const [news, setNews] = useState<NewsItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
-    const [search, setSearch] = useState("");
-    const [filtered, setFiltered] = useState<NewsItem[]>([]);
-    const [total, setTotal] = useState(0);
-    const [totalItems, setTotalItems] = useState(0);
+    const [newsState] = useAtom(newsAtom);
+    const [filtered] = useAtom(filteredNewsAtom);
+    const [loading] = useAtom(loadingAtom);
+    const [page] = useAtom(pageAtom);
+    const [search] = useAtom(searchAtom);
+    const [total] = useAtom(totalPagesAtom);
+    const [totalItems] = useAtom(totalItemsAtom);
+
+    const setNews = useSetAtom(setNewsAtom);
+    const updateCache = useSetAtom(updatePaginationCacheAtom);
+    const [getFromCache] = useAtom(getFromCacheAtom);
+
     const limit = 6;
 
     useEffect(() => {
         fetchNews();
-    }, [page]);
+    }, [page, search]);
 
-    const fetchNews = async (query = "") => {
-        setLoading(true);
+    const fetchNews = async (query = search) => {
+        const cacheKey = generateCacheKey(page, query, limit);
+        const cached = getFromCache(cacheKey);
+
+        if (cached) {
+            // Use cached data
+            setNews({
+                news: cached.data,
+                filtered: cached.data,
+                total: cached.totalPages,
+                totalItems: cached.totalItems,
+                loading: false
+            });
+            return;
+        }
+
+        // Fetch from API if not in cache
+        setNews({ loading: true });
         try {
             const url = query
                 ? `/api/news/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
                 : `/api/news?page=${page}&limit=${limit}`;
             const res = await axios.get(url);
-            setNews(res.data.data || []);
-            setFiltered(res.data.data || []);
-            setPage(res.data.page || 1);
-            setTotal(res.data.totalPages || 0);
-            setTotalItems(res.data.totalItems || 0);
+            const newsData = res.data.data || [];
+
+            // Update cache
+            updateCache({
+                key: cacheKey,
+                data: newsData,
+                totalPages: res.data.totalPages || 0,
+                totalItems: res.data.totalItems || 0,
+            });
+
+            // Update state
+            setNews({
+                news: newsData,
+                filtered: newsData,
+                total: res.data.totalPages || 0,
+                totalItems: res.data.totalItems || 0,
+                loading: false
+            });
         } catch (err) {
             console.error(err);
-        } finally {
-            setLoading(false);
+            setNews({ loading: false });
         }
     };
 
     const debouncedSearch = useMemo(
-        () => debounce((val: string) => fetchNews(val), 800),
+        () => debounce((val: string) => {
+            setNews({ page: 1, search: val });
+        }, 800),
         []
     );
 
@@ -67,15 +107,16 @@ export default function NewsPage() {
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
-        setSearch(val);
-        setPage(1);
+        setNews({ search: val });
         debouncedSearch(val);
     };
 
     const handleReset = () => {
-        setSearch("");
-        setPage(1);
-        fetchNews();
+        setNews({ search: "", page: 1 });
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setNews({ page: newPage });
     };
 
     return (
@@ -168,7 +209,7 @@ export default function NewsPage() {
                                     {search ? "No results found" : "No articles available"}
                                 </h3>
                                 <p className="text-muted-foreground">
-                                    {search 
+                                    {search
                                         ? `No articles found for "${search}". Try different keywords.`
                                         : "Check back later for new updates and stories."
                                     }
@@ -213,13 +254,16 @@ export default function NewsPage() {
                                     <p className="text-sm text-muted-foreground">
                                         Showing page {page} of {total}
                                     </p>
-                                    
+
                                     <div className="flex items-center gap-2">
                                         <Button
                                             variant="outline"
                                             size="sm"
                                             disabled={page === 1}
-                                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                            onClick={() => {
+                                                handlePageChange(Math.max(1, page - 1));
+                                                setTimeout(() => scrollTo({ top: 0, behavior: 'smooth' }), 100);
+                                            }}
                                             className="flex items-center gap-2 disabled:opacity-50 transition-all duration-200"
                                         >
                                             ← Previous
@@ -233,12 +277,14 @@ export default function NewsPage() {
                                                         key={pageNum}
                                                         variant={page === pageNum ? "default" : "outline"}
                                                         size="sm"
-                                                        onClick={() => setPage(pageNum)}
-                                                        className={`w-8 h-8 p-0 text-xs transition-all duration-200 ${
-                                                            page === pageNum 
-                                                                ? 'bg-primary text-primary-foreground' 
-                                                                : 'hover:bg-muted'
-                                                        }`}
+                                                        onClick={() => {
+                                                            handlePageChange(pageNum);
+                                                            setTimeout(() => scrollTo({ top: 0, behavior: 'smooth' }), 100);
+                                                        }}
+                                                        className={`w-8 h-8 p-0 text-xs transition-all duration-200 ${page === pageNum
+                                                            ? 'bg-primary text-primary-foreground'
+                                                            : 'hover:bg-muted'
+                                                            }`}
                                                     >
                                                         {pageNum}
                                                     </Button>
@@ -253,7 +299,10 @@ export default function NewsPage() {
                                             variant="outline"
                                             size="sm"
                                             disabled={page === total}
-                                            onClick={() => setPage((p) => Math.min(total, p + 1))}
+                                            onClick={() => {
+                                                handlePageChange(Math.min(total, page + 1));
+                                                setTimeout(() => scrollTo({ top: 0, behavior: 'smooth' }), 100);
+                                            }}
                                             className="flex items-center gap-2 disabled:opacity-50 transition-all duration-200"
                                         >
                                             Next →

@@ -62,7 +62,7 @@ export default function NewsCards({ data }: { data: newsObj[] }) {
                                     <div className="w-full h-full bg-black relative">
                                             {/* Mobile: Show thumbnail instead of iframe */}
                                             <div 
-                                                className="w-full h-full bg-cover bg-center"
+                                                className="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                                                 style={{
                                                     backgroundImage: `url(https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg)`
                                                 }}

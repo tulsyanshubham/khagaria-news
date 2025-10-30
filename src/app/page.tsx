@@ -1,27 +1,28 @@
+// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAtom, useSetAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Newspaper, Calendar, Play, ArrowRight, Sparkles, TrendingUp } from "lucide-react";
 import NewsCards from "@/components/NewsCards";
-
-interface NewsItem {
-  _id: string;
-  title: string;
-  content: string;
-  image?: string;
-  youtubeVideoId?: string;
-  createdAt: string;
-  slug: string;
-}
+import {
+  homepageNewsAtom,
+  homepageLoadingAtom,
+  setHomepageNewsAtom,
+  setHomepageLoadingAtom,
+} from "./stores/newsStore";
 
 export default function HomePage() {
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [news] = useAtom(homepageNewsAtom);
+  const [loading] = useAtom(homepageLoadingAtom);
+  const setHomepageNews = useSetAtom(setHomepageNewsAtom);
+  const setHomepageLoading = useSetAtom(setHomepageLoadingAtom);
+
   const [imageLoading, setImageLoading] = useState(true);
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
 
@@ -30,13 +31,20 @@ export default function HomePage() {
   }, []);
 
   const fetchNews = async () => {
+    // Check if we already have homepage news data
+    if (news.length > 0) {
+      setHomepageLoading(false);
+      return;
+    }
+
+    setHomepageLoading(true);
     try {
       const res = await axios.get(`/api/news?page=1&limit=4`);
-      setNews(res.data.data || []);
+      const newsData = res.data.data || [];
+      setHomepageNews(newsData);
     } catch (error) {
       console.error("Error fetching news:", error);
-    } finally {
-      setLoading(false);
+      setHomepageLoading(false);
     }
   };
 

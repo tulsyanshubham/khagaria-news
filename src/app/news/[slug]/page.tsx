@@ -358,7 +358,7 @@ export default function NewsDetailPage() {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="space-y-6 sticky top-8"
+                                className="space-y-6 sticky top-24"
                             >
                                 <div className="flex items-center gap-2">
                                     <Tag className="w-5 h-5 text-primary" />
