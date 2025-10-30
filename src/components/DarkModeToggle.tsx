@@ -6,13 +6,15 @@ import { motion } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
 
 export default function DarkModeToggle() {
-    const { theme, setTheme } = useTheme();
+    const { theme, setTheme, systemTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => setMounted(true), []);
     if (!mounted) return null;
 
-    const isDark = theme === "dark";
+    // Check if we're currently in dark mode (respects system theme)
+    const currentTheme = theme === "system" ? systemTheme : theme;
+    const isDark = currentTheme === "dark";
 
     return (
         <motion.button

@@ -60,30 +60,24 @@ export default function NewsCards({ data }: { data: newsObj[] }) {
                                     />
                                 ) : item.youtubeVideoId ? (
                                     <div className="w-full h-full bg-black relative">
-                                        <iframe
-                                            src={`https://www.youtube.com/embed/${item.youtubeVideoId}?rel=0&modestbranding=1`}
-                                            title={item.title}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                            className="w-full h-full pointer-events-auto"
-                                            frameBorder="0"
-                                            loading="lazy"
-                                        />
-                                        {/* Overlay that disappears on hover to allow video interaction */}
-                                        <div 
-                                            className={`absolute inset-0 bg-linear-to-t from-black/30 to-transparent transition-opacity duration-300 ${
-                                                hoveredVideo === item._id ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                                            }`}
-                                        />
-                                        <div className={`absolute top-3 left-3 transition-opacity duration-300 ${
-                                            hoveredVideo === item._id ? 'opacity-0' : 'opacity-100'
-                                        }`}>
-                                            <Badge variant="destructive" className="bg-red-600 hover:bg-red-700">
-                                                <Play className="w-3 h-3 mr-1" />
-                                                YouTube
-                                            </Badge>
+                                            {/* Mobile: Show thumbnail instead of iframe */}
+                                            <div 
+                                                className="w-full h-full bg-cover bg-center"
+                                                style={{
+                                                    backgroundImage: `url(https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg)`
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                                <div className="text-center space-y-1">
+                                                    <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mx-auto">
+                                                        <Play className="w-4 h-4 text-white" />
+                                                    </div>
+                                                    <Badge variant="destructive" className="bg-red-600 text-xs px-1">
+                                                        Video
+                                                    </Badge>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
                                 ) : (
                                     <div className="flex items-center justify-center h-full bg-linear-to-br from-muted to-muted/50">
                                         <div className="text-center space-y-2">
