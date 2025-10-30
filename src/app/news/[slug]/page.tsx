@@ -302,13 +302,13 @@ export default function NewsDetailPage() {
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.4 }}
                                     >
-                                        <div className="space-y-6 text-foreground/90 text-base md:text-lg">
+                                        <div className="text-foreground/90 text-base md:text-lg">
                                             {news.content.split("\n").map((para, i) => (
                                                 <motion.p
                                                     key={i}
                                                     initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: 0.6 + (i * 0.1) }}
+                                                    transition={{ delay: 0.6 + (i * 0.05) }}
                                                     className="leading-8"
                                                 >
                                                     {para}
