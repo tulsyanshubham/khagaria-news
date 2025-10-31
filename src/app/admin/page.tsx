@@ -128,14 +128,26 @@ export default function ManageNewsPage() {
                     className="mb-12"
                 >
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <FileText className="w-6 h-6 text-primary" />
+                        <div className="space-y-3 flex-1">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-primary/10 rounded-lg">
+                                        <FileText className="w-6 h-6 text-primary" />
+                                    </div>
+                                    <h1 className="text-3xl lg:text-4xl font-bold bg-linear-to-r from-foreground to-foreground/80 bg-clip-text text-transparent py-1">
+                                        News Management
+                                    </h1>
                                 </div>
-                                <h1 className="text-3xl lg:text-4xl font-bold bg-linear-to-r from-foreground to-foreground/80 bg-clip-text text-transparent py-1">
-                                    News Management
-                                </h1>
+                                
+                                {/* Mobile Logout Button */}
+                                <Button
+                                    onClick={handleLogout}
+                                    variant="outline"
+                                    size="icon"
+                                    className="lg:hidden border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
+                                >
+                                    <LogOut className="w-4 h-4" />
+                                </Button>
                             </div>
                             <p className="text-lg text-muted-foreground max-w-2xl">
                                 Manage your news articles with ease. Create, edit, and publish content seamlessly.
@@ -150,27 +162,33 @@ export default function ManageNewsPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-row justify-center gap-3">
-                            <Button
-                                onClick={handleReload}
-                                variant="outline"
-                                disabled={loading}
-                                className="min-w-1/3 sm:w-auto transition-all duration-200"
-                            >
-                                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                                <span>Reload</span>
-                            </Button>
-                            <Button
-                                onClick={() => { router.push("/admin/news/create") }}
-                                className="min-w-1/3 sm:w-auto bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:text-black shadow-lg hover:shadow-xl transition-all duration-300 group"
-                            >
-                                <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                                <span className="mr-2">Create New</span>
-                            </Button>
+                        {/* Action Buttons - Always Visible */}
+                        <div className="flex flex-row items-center gap-3">
+                            {/* Reload and Create New - Always Visible */}
+                            <div className="flex flex-row gap-3">
+                                <Button
+                                    onClick={handleReload}
+                                    variant="outline"
+                                    disabled={loading}
+                                    className="transition-all duration-200"
+                                >
+                                    <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                                    <span className="inline">Reload</span>
+                                </Button>
+                                <Button
+                                    onClick={() => { router.push("/admin/news/create") }}
+                                    className="bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:text-black shadow-lg hover:shadow-xl transition-all duration-300 group"
+                                >
+                                    <Plus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                                    <span className="inline">Create New</span>
+                                </Button>
+                            </div>
+
+                            {/* Desktop Logout Button */}
                             <Button
                                 onClick={handleLogout}
                                 variant="outline"
-                                className="min-w-1/3 sm:w-auto border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
+                                className="hidden lg:flex border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50 transition-colors"
                             >
                                 <LogOut className="w-4 h-4 mr-2" />
                                 <span>Logout</span>
