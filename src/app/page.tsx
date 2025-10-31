@@ -208,7 +208,7 @@ export default function HomePage() {
 
                       <Button
                         onClick={() => (window.location.href = `/news/${featured.slug}`)}
-                        className="bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+                        className="bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary dark:text-black text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
                       >
                         Read Full Story
                         <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />

@@ -44,7 +44,7 @@ export default function Navbar() {
                 </Link>
 
                 {/* Navigation Links */}
-                <div className="flex gap-6">
+                <div className="flex gap-3 sm:gap-6">
                     {navItems.map((item) => {
                         const active = pathname === item.href;
                         return (

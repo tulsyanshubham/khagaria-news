@@ -1,7 +1,7 @@
 // page.tsx
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { useAtom, useSetAtom } from "jotai";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Search, Newspaper, NotebookText } from "lucide-react";
-import { debounce } from "lodash";
 import NewsCards from "@/components/NewsCards";
 import {
     newsAtom,
@@ -41,44 +40,50 @@ export default function NewsPage() {
 
     const limit = 6;
 
+    // Load on page or pagination change
     useEffect(() => {
-        fetchNews();
-    }, [page, search]);
+        if (!search) {
+            fetchNews();
+        }
+    }, [page]);
 
-    const fetchNews = async (query = search) => {
+    const fetchNews = async (query = search, useCache = true) => {
         const cacheKey = generateCacheKey(page, query, limit);
-        const cached = getFromCache(cacheKey);
 
-        if (cached) {
-            // Use cached data
-            setNews({
-                news: cached.data,
-                filtered: cached.data,
-                total: cached.totalPages,
-                totalItems: cached.totalItems,
-                loading: false
-            });
-            return;
+        // ✅ Only use cache for non-search queries
+        if (useCache && !query) {
+            const cached = getFromCache(cacheKey);
+            if (cached) {
+                setNews({
+                    news: cached.data,
+                    filtered: cached.data,
+                    total: cached.totalPages,
+                    totalItems: cached.totalItems,
+                    loading: false
+                });
+                return;
+            }
         }
 
-        // Fetch from API if not in cache
         setNews({ loading: true });
         try {
             const url = query
                 ? `/api/news/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
                 : `/api/news?page=${page}&limit=${limit}`;
             const res = await axios.get(url);
+            console.log(res)
             const newsData = res.data.data || [];
 
-            // Update cache
-            updateCache({
-                key: cacheKey,
-                data: newsData,
-                totalPages: res.data.totalPages || 0,
-                totalItems: res.data.totalItems || 0,
-            });
+            // ✅ Only cache non-search results
+            if (!query) {
+                updateCache({
+                    key: cacheKey,
+                    data: newsData,
+                    totalPages: res.data.totalPages || 0,
+                    totalItems: res.data.totalItems || 0,
+                });
+            }
 
-            // Update state
             setNews({
                 news: newsData,
                 filtered: newsData,
@@ -92,27 +97,19 @@ export default function NewsPage() {
         }
     };
 
-    const debouncedSearch = useMemo(
-        () => debounce((val: string) => {
-            setNews({ page: 1, search: val });
-        }, 800),
-        []
-    );
-
-    useEffect(() => {
-        return () => {
-            debouncedSearch.cancel();
-        };
-    }, [debouncedSearch]);
-
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setNews({ search: val });
-        debouncedSearch(val);
+    };
+
+    const handleSearchClick = () => {
+        setNews({ page: 1 });
+        fetchNews(search, false); // ❌ no cache for search
     };
 
     const handleReset = () => {
         setNews({ search: "", page: 1 });
+        fetchNews("", true); // ✅ normal fetch with cache
     };
 
     const handlePageChange = (newPage: number) => {
@@ -157,25 +154,33 @@ export default function NewsPage() {
                         {/* Search Section */}
                         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                             <div className="relative w-full lg:w-80">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                                 <Input
                                     type="text"
                                     placeholder="Search news articles..."
                                     value={search}
-                                    onChange={handleSearch}
-                                    className="pl-10 pr-4 py-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-border/50 focus:border-primary transition-all duration-300"
+                                    onChange={handleInputChange}
+                                    className="pl-4 pr-10 py-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-border/50 focus:border-primary transition-all duration-300"
                                 />
+                                {search && (
+                                    <button
+                                        type="button"
+                                        onClick={handleReset}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
                             </div>
-                            {search && (
-                                <Button
-                                    variant="outline"
-                                    onClick={handleReset}
-                                    className="whitespace-nowrap"
-                                >
-                                    Clear
-                                </Button>
-                            )}
+
+                            <Button
+                                variant="default"
+                                onClick={handleSearchClick}
+                                className="whitespace-nowrap"
+                            >
+                                Search
+                            </Button>
                         </div>
+
                     </div>
                 </motion.div>
 
@@ -211,8 +216,7 @@ export default function NewsPage() {
                                 <p className="text-muted-foreground">
                                     {search
                                         ? `No articles found for "${search}". Try different keywords.`
-                                        : "Check back later for new updates and stories."
-                                    }
+                                        : "Check back later for new updates and stories."}
                                 </p>
                                 {search && (
                                     <Button onClick={handleReset} variant="outline" className="mt-4">
