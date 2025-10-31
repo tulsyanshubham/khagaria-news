@@ -71,7 +71,6 @@ export default function NewsPage() {
                 ? `/api/news/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
                 : `/api/news?page=${page}&limit=${limit}`;
             const res = await axios.get(url);
-            console.log(res)
             const newsData = res.data.data || [];
 
             // ✅ Only cache non-search results

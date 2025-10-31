@@ -45,7 +45,6 @@ export default function ManageNewsPage() {
         setLoading(true);
         try {
             const res = await axios.get(`/api/news?page=${page}&limit=${limit}`);
-            console.log(res.data.totalItems);
             setNews(res.data.data || []);
             if (res.data.total && res.data.limit) {
                 setTotalPages(Math.ceil(res.data.total / res.data.limit));
