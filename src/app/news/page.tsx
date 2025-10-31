@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Search, Newspaper, NotebookText } from "lucide-react";
+import { Loader2, Search, Newspaper, NotebookText, RefreshCw } from "lucide-react";
 import NewsCards from "@/components/NewsCards";
 import {
     newsAtom,
@@ -112,6 +112,10 @@ export default function NewsPage() {
         fetchNews("", true); // ✅ normal fetch with cache
     };
 
+    const handleReload = () => {
+        fetchNews(search, false); // ❌ no cache for reload to get fresh data
+    };
+
     const handlePageChange = (newPage: number) => {
         setNews({ page: newPage });
     };
@@ -179,6 +183,16 @@ export default function NewsPage() {
                             >
                                 <Search />
                                 <span className="hidden sm:inline">Search</span>
+                            </Button>
+                            
+                            <Button
+                                variant="outline"
+                                onClick={handleReload}
+                                disabled={loading}
+                                className="whitespace-nowrap"
+                            >
+                                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                                <span className="hidden sm:inline">Reload</span>
                             </Button>
                         </div>
 

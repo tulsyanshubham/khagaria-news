@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Edit2, Trash2, ChevronLeft, ChevronRight, X, LogOut, Plus, FileText, Calendar, Play, ExternalLink } from "lucide-react";
+import { Loader2, Edit2, Trash2, ChevronLeft, ChevronRight, X, LogOut, Plus, FileText, Calendar, Play, ExternalLink, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -59,6 +59,10 @@ export default function ManageNewsPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleReload = () => {
+        fetchNews();
     };
 
     const openDeleteModal = (item: NewsItem) => {
@@ -114,17 +118,6 @@ export default function ManageNewsPage() {
         router.replace("/login");
     }
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 flex justify-center items-center">
-                <div className="text-center space-y-4">
-                    <Loader2 className="w-16 h-16 animate-spin text-primary mx-auto" />
-                    <p className="text-muted-foreground font-medium">Loading articles...</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -160,6 +153,15 @@ export default function ManageNewsPage() {
 
                         <div className="flex flex-row justify-center gap-3">
                             <Button
+                                onClick={handleReload}
+                                variant="outline"
+                                disabled={loading}
+                                className="min-w-1/3 sm:w-auto transition-all duration-200"
+                            >
+                                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                                <span>Reload</span>
+                            </Button>
+                            <Button
                                 onClick={() => { router.push("/admin/news/create") }}
                                 className="min-w-1/3 sm:w-auto bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:text-black shadow-lg hover:shadow-xl transition-all duration-300 group"
                             >
@@ -179,7 +181,18 @@ export default function ManageNewsPage() {
                 </motion.div>
 
                 {/* Articles Grid */}
-                {news.length === 0 ? (
+                {loading ? (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex justify-center items-center h-96"
+                    >
+                        <div className="text-center space-y-4">
+                            <Loader2 className="w-16 h-16 animate-spin text-primary mx-auto" />
+                            <p className="text-muted-foreground font-medium">Loading articles...</p>
+                        </div>
+                    </motion.div>
+                ) : news.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
