@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
-import { Loader2, Lock, Eye, EyeOff, Shield, Newspaper } from "lucide-react";
+import { Loader2, Lock, Eye, EyeOff, Shield, Newspaper, Home, ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"
@@ -46,6 +46,10 @@ export default function LoginPage() {
         }
     };
 
+    const handleBackToHome = () => {
+        router.push("/");
+    };
+
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 dark:from-gray-950 dark:via-blue-950/20 dark:to-indigo-950/30 flex items-center justify-center p-4">
             {/* Background Decorations */}
@@ -54,6 +58,19 @@ export default function LoginPage() {
                 <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"></div>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/3 rounded-full blur-3xl"></div>
             </div>
+
+            {/* Back to Home Button - Top Left */}
+            {/* <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                onClick={handleBackToHome}
+                className="absolute top-6 left-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 dark:border-gray-700/50 shadow-lg"
+                disabled={loading}
+            >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+            </motion.button> */}
 
             <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -174,6 +191,24 @@ export default function LoginPage() {
                                         <div className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                     </>
                                 )}
+                            </Button>
+                        </motion.div>
+
+                        {/* Back to Home Button - Bottom */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.6, delay: 0.5 }}
+                        >
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleBackToHome}
+                                className="w-full h-11 border-muted/50 bg-transparent hover:bg-muted/20 text-muted-foreground hover:text-foreground transition-all duration-300 rounded-xl group"
+                                disabled={loading}
+                            >
+                                <Home className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                                Return to Homepage
                             </Button>
                         </motion.div>
                     </form>
