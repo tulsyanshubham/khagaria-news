@@ -52,9 +52,9 @@ const Footer = () => {
     ];
 
     return (
-        <footer className={cn("bg-linear-to-br from-slate-900 via-gray-900 to-black text-white",pathname === "/login" || pathname.startsWith("/admin") ? "hidden" : "")}>
+        <footer className={cn("bg-linear-to-br from-slate-900 via-gray-900 to-black text-white",pathname === "/login" || pathname.startsWith("/admin/news") ? "hidden" : "")}>
             {/* Main Footer Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12",pathname.startsWith("/admin") ? "hidden" : "")}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                     {/* Brand Column */}
                     <motion.div
@@ -64,27 +64,27 @@ const Footer = () => {
                         className="space-y-6"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-primary rounded-lg">
+                            <div className="p-2 bg-gray-700 rounded-lg">
                                 <Newspaper className="w-6 h-6 text-white" />
                             </div>
                             <div>
                                 <h3 className="text-2xl font-bold">Khagaria News 18</h3>
-                                <p className="text-primary text-sm font-medium">Trusted Local News</p>
+                                <p className="text-gray-50 text-sm font-medium">Trusted Local News</p>
                             </div>
                         </div>
 
                         {/* Contact Info */}
                         <div className="space-y-3 pt-2">
                             <div className="flex items-center gap-3 text-gray-300">
-                                <MapPin className="w-4 h-4 text-primary" />
+                                <MapPin className="w-4 h-4 text-white" />
                                 <span className="text-sm">Khagaria, Bihar, India - 851204</span>
                             </div>
                             <div className="flex items-center gap-3 text-gray-300">
-                                <Mail className="w-4 h-4 text-primary" />
+                                <Mail className="w-4 h-4 text-white" />
                                 <span className="text-sm">contact@khagarianews18.com</span>
                             </div>
                             <div className="flex items-center gap-3 text-gray-300">
-                                <Phone className="w-4 h-4 text-primary" />
+                                <Phone className="w-4 h-4 text-white" />
                                 <span className="text-sm">+91 XXXXX XXXXX</span>
                             </div>
                         </div>
@@ -125,9 +125,9 @@ const Footer = () => {
             <div className="border-t border-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row justify-around items-center gap-4">
-                        <div className="text-gray-400 text-sm text-center md:text-left">
-                            © {currentYear} Khagaria News 18. All rights reserved.
-                            <span className="mx-2">•</span>
+                        <div className="text-gray-400 text-sm text-center md:text-left flex flex-col sm:flex-row">
+                            <span>© {currentYear} Khagaria News 18. All rights reserved.</span>
+                            <span className="mx-2 hidden sm:inline">•</span>
                             <span>Proudly serving Khagaria community</span>
                         </div>
                         <div className="flex items-center gap-6 text-sm text-gray-400">
