@@ -152,7 +152,7 @@ export default function NewsPage() {
                         </div>
 
                         {/* Search Section */}
-                        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                        <div className="flex flex-row gap-3 w-full lg:w-auto">
                             <div className="relative w-full lg:w-80">
                                 <Input
                                     type="text"
@@ -177,7 +177,8 @@ export default function NewsPage() {
                                 onClick={handleSearchClick}
                                 className="whitespace-nowrap"
                             >
-                                Search
+                                <Search />
+                                <span className="hidden sm:inline">Search</span>
                             </Button>
                         </div>
 

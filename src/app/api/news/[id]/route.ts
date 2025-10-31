@@ -2,6 +2,7 @@ import News from "@/models/News";
 import { dbConnect } from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import slugify from "slugify";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -38,7 +39,7 @@ export async function PUT(
 
         await dbConnect();
         const body = await req.json();
-        let { title, content, image, youtubeVideoId, slug: newSlug } = body;
+        let { title, content, image, youtubeVideoId, slug } = body;
 
         // 1. Find the post we are trying to edit
         // ✅ CHANGE HERE: Find by ID
@@ -51,26 +52,21 @@ export async function PUT(
             );
         }
 
-        // ... rest of your validation logic ...
-
         // 2. Handle slug generation and conflicts
-        if (!newSlug) {
-            newSlug = postToEdit.slug; // Keep old slug if new one isn't provided
+        if (!slug || slug.trim() === "" || slug === "-") {
+            slug = title
+            .normalize("NFKD")
+            .replace(/[^\u0900-\u097FA-Za-z0-9\s-]/g, "") // keep Devanagari + English letters + numbers
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .toLowerCase();
         }
 
-        // 3. Check for conflicts ONLY if the slug has changed
-        if (newSlug !== postToEdit.slug) {
-            const conflict = await News.findOne({
-                slug: newSlug,
-                _id: { $ne: postToEdit._id } // Your correct logic!
-            });
-
-            if (conflict) {
-                return NextResponse.json(
-                    { success: false, message: "Slug already exists." },
-                    { status: 409 }
-                );
-            }
+        let uniqueSlug = slug;
+        let counter = 1;
+        while (await News.findOne({ slug: uniqueSlug, _id: { $ne: postToEdit._id } })) {
+            uniqueSlug = `${slug}-${counter++}`;
         }
 
         // 4. Perform update
@@ -78,7 +74,7 @@ export async function PUT(
         postToEdit.content = content;
         postToEdit.image = image || null;
         postToEdit.youtubeVideoId = youtubeVideoId || null;
-        postToEdit.slug = newSlug;
+        postToEdit.slug = uniqueSlug;
 
         const updated = await postToEdit.save();
 
@@ -108,7 +104,7 @@ export async function DELETE(
         await dbConnect();
 
         // 3. Use findByIdAndDelete with the 'id'
-        const deleted = await News.findByIdAndDelete(id); 
+        const deleted = await News.findByIdAndDelete(id);
 
         if (!deleted)
             return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });

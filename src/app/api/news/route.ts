@@ -68,12 +68,13 @@ export async function POST(req: NextRequest) {
         }
 
         // 🧩 Unicode-safe slug generation (preserves Hindi matras)
-        if (!slug) {
+        if (!slug || slug.trim() === "" || slug === "-") {
             slug = title
+                .normalize("NFKD")
+                .replace(/[^\u0900-\u097FA-Za-z0-9\s-]/g, "") // keep Devanagari + English letters + numbers
                 .trim()
-                .replace(/[^\p{L}\p{N}\s-]/gu, "") // keep letters, digits, spaces, hyphens
-                .replace(/\s+/g, "-") // spaces → hyphens
-                .replace(/-+/g, "-") // collapse multiple hyphens
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-")
                 .toLowerCase();
         }
 

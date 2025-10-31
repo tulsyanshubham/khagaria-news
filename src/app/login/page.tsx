@@ -29,13 +29,13 @@ export default function LoginPage() {
             const res = await axios.post("/api/auth/login", { username, password });
             localStorage.setItem("token", res.data.token);
 
-            toast.success("Login successful 🎉",{
+            toast.success("Login successful",{
                 description: "Redirecting to dashboard...",
                 duration: 2000,
             });
             router.push("/admin");
         } catch (error: any) {
-            toast.error("Login failed ❌", {
+            toast.error("Login failed", {
                 description:
                     error?.response?.data?.message || "Invalid username or password",
                 duration: 2500,
