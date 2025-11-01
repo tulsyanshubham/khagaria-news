@@ -34,20 +34,14 @@ const Footer = () => {
         {
             name: "Facebook",
             icon: Facebook,
-            href: "https://facebook.com/khagarianews18",
+            href: "https://www.facebook.com/people/khagaria-news18/61558081949532/",
             color: "hover:text-blue-600"
         },
         {
             name: "YouTube",
             icon: Youtube,
-            href: "https://youtube.com/@khagarianews18",
+            href: "https://www.youtube.com/@khagaria.news.18",
             color: "hover:text-red-600"
-        },
-        {
-            name: "X",
-            icon: XIcon,
-            href: "https://x.com/khagarianews18",
-            color: "hover:text-gray-400"
         }
     ];
 
@@ -75,18 +69,18 @@ const Footer = () => {
 
                         {/* Contact Info */}
                         <div className="space-y-3 pt-2">
-                            <div className="flex items-center gap-3 text-gray-300">
+                            <a href="https://maps.app.goo.gl/j6chuyMBFXNvPUxVA" target="_blank" className="flex items-center gap-3 text-gray-300">
                                 <MapPin className="w-4 h-4 text-white" />
                                 <span className="text-sm">Khagaria, Bihar, India - 851204</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-gray-300">
+                            </a>
+                            <a href="mailto:priyankavikram74@gmail.com" className="flex items-center gap-3 text-gray-300">
                                 <Mail className="w-4 h-4 text-white" />
-                                <span className="text-sm">contact@khagarianews18.com</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-gray-300">
+                                <span className="text-sm">priyankavikram74@gmail.com</span>
+                            </a>
+                            <a href="tel:+917004899268" className="flex items-center gap-3 text-gray-300">
                                 <Phone className="w-4 h-4 text-white" />
-                                <span className="text-sm">+91 XXXXX XXXXX</span>
-                            </div>
+                                <span className="text-sm">+91 70048 99268</span>
+                            </a>
                         </div>
                     </motion.div>
 

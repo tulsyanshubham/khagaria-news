@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const JWT_SECRET = process.env.JWT_SECRET!;
 
     if (username === ADMIN_USER && password === ADMIN_PASS) {
-        const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "15d" });
 
         return NextResponse.json(
             { message: "Login successful", token },
