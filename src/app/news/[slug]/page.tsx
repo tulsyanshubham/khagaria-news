@@ -51,13 +51,21 @@ export default function NewsDetailPage() {
 
             // Fetch related news
             const rel = await axios.get(`/api/news?page=1&limit=4`);
-            setRelatedNews(rel.data.data || []);
+
+            const allNews = rel.data.data || [];
+
+            // Filter out the current news and take first 4
+            const filteredRelatedNews = allNews
+                .filter((newsItem: any) => newsItem._id !== res.data.news?._id)
+                .slice(0, 4);
+
+            setRelatedNews(filteredRelatedNews);
 
             // Check if bookmarked
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
             setIsBookmarked(bookmarks.includes(res.data.news?._id));
         } catch (err) {
-            console.error("Error fetching news:", err);
+            console.log("Error fetching news:", err);
             toast.error("Failed to load news article");
         } finally {
             setLoading(false);
@@ -86,10 +94,10 @@ export default function NewsDetailPage() {
 
     const toggleBookmark = () => {
         if (!news) return;
-        
+
         const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
         let newBookmarks;
-        
+
         if (isBookmarked) {
             newBookmarks = bookmarks.filter((id: string) => id !== news._id);
             toast.success("Bookmark removed");
@@ -97,7 +105,7 @@ export default function NewsDetailPage() {
             newBookmarks = [...bookmarks, news._id];
             toast.success("Article bookmarked");
         }
-        
+
         localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
         setIsBookmarked(!isBookmarked);
     };
@@ -113,7 +121,7 @@ export default function NewsDetailPage() {
         const date = new Date(dateString);
         const now = new Date();
         const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-        
+
         if (diffInHours < 1) return 'Just now';
         if (diffInHours < 24) return `${diffInHours}h ago`;
         if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
@@ -178,7 +186,7 @@ export default function NewsDetailPage() {
                         >
                             <Card className="overflow-hidden border-0 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-500">
                                 {/* Media Section */}
-                                <div 
+                                <div
                                     className="relative w-full aspect-video bg-linear-to-br from-muted/50 to-muted overflow-hidden"
                                     onMouseEnter={() => news.youtubeVideoId && setHoveredVideo(true)}
                                     onMouseLeave={() => setHoveredVideo(false)}
@@ -195,14 +203,12 @@ export default function NewsDetailPage() {
                                                 loading="lazy"
                                             />
                                             {/* Overlay that disappears on hover */}
-                                            <div 
-                                                className={`absolute inset-0 bg-linear-to-t from-black/40 to-transparent transition-opacity duration-300 ${
-                                                    hoveredVideo ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                                                }`}
+                                            <div
+                                                className={`absolute inset-0 bg-linear-to-t from-black/40 to-transparent transition-opacity duration-300 ${hoveredVideo ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                                                    }`}
                                             />
-                                            <div className={`absolute top-4 left-4 transition-opacity duration-300 ${
-                                                hoveredVideo ? 'opacity-0' : 'opacity-100'
-                                            }`}>
+                                            <div className={`absolute top-4 left-4 transition-opacity duration-300 ${hoveredVideo ? 'opacity-0' : 'opacity-100'
+                                                }`}>
                                                 <Badge variant="destructive" className="bg-red-600 hover:bg-red-700 px-3 py-1">
                                                     <Play className="w-3 h-3 mr-1" />
                                                     Watch Video
@@ -219,9 +225,8 @@ export default function NewsDetailPage() {
                                             <img
                                                 src={news.image}
                                                 alt={news.title}
-                                                className={`w-full h-full object-cover transition-transform duration-700 ${
-                                                    imageLoading ? 'opacity-0' : 'opacity-100'
-                                                }`}
+                                                className={`w-full h-full object-cover transition-transform duration-700 ${imageLoading ? 'opacity-0' : 'opacity-100'
+                                                    }`}
                                                 onLoad={() => setImageLoading(false)}
                                             />
                                         </>
@@ -274,16 +279,15 @@ export default function NewsDetailPage() {
                                                 <Share2 className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                                                 Share Article
                                             </Button>
-                                            
+
                                             <Button
                                                 onClick={toggleBookmark}
                                                 variant="outline"
                                                 size="sm"
-                                                className={`transition-all duration-300 group px-4 ${
-                                                    isBookmarked 
-                                                        ? 'bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100' 
-                                                        : 'hover:bg-primary hover:text-white'
-                                                }`}
+                                                className={`transition-all duration-300 group px-4 ${isBookmarked
+                                                    ? 'bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100'
+                                                    : 'hover:bg-primary hover:text-white'
+                                                    }`}
                                             >
                                                 {isBookmarked ? (
                                                     <BookmarkCheck className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
@@ -352,30 +356,30 @@ export default function NewsDetailPage() {
                     </div>
 
                     {/* Sidebar - Related News */}
-                    {relatedNews.length > 0 && (
-                        <div className="lg:col-span-1">
-                            <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 }}
-                                className="space-y-6 sticky top-24"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <Tag className="w-5 h-5 text-primary" />
-                                    <h3 className="text-xl font-bold bg-linear-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-                                        Other Top News
-                                    </h3>
-                                </div>
-                                
-                                <div className="space-y-4">
-                                    {relatedNews.map((item, index) => (
+                    <div className="lg:col-span-1">
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="space-y-6 sticky top-24"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Tag className="w-5 h-5 text-primary" />
+                                <h3 className="text-xl font-bold bg-linear-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                                    Other Top News
+                                </h3>
+                            </div>
+
+                            <div className="space-y-4">
+                                {relatedNews.length > 0 ? (
+                                    relatedNews.map((item, index) => (
                                         <motion.div
                                             key={item._id}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.5 + (index * 0.1) }}
                                         >
-                                            <Card 
+                                            <Card
                                                 className="group hover:shadow-lg transition-all duration-300 border-0 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm overflow-hidden cursor-pointer hover:border-primary/20"
                                                 onClick={() => router.push(`/news/${item.slug}`)}
                                             >
@@ -390,21 +394,24 @@ export default function NewsDetailPage() {
                                                 </CardContent>
                                             </Card>
                                         </motion.div>
-                                    ))}
-                                </div>
+                                    ))) : (
+                                    <div className="text-center text-muted-foreground">
+                                        No other news found.
+                                    </div>
+                                )}
+                            </div>
 
-                                {/* View All Button */}
-                                <Button
-                                    onClick={() => router.push('/news')}
-                                    variant="outline"
-                                    className="w-full border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30 transition-all duration-300 group"
-                                >
-                                    View All News
-                                    <ArrowLeft className="w-4 h-4 ml-2 group-hover:-translate-x-1 transition-transform rotate-180" />
-                                </Button>
-                            </motion.div>
-                        </div>
-                    )}
+                            {/* View All Button */}
+                            <Button
+                                onClick={() => router.push('/news')}
+                                variant="outline"
+                                className="w-full border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/30 transition-all duration-300 group"
+                            >
+                                View All News
+                                <ArrowLeft className="w-4 h-4 ml-2 group-hover:-translate-x-1 transition-transform rotate-180" />
+                            </Button>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
