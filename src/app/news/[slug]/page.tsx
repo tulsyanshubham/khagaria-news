@@ -277,7 +277,7 @@ export default function NewsDetailPage() {
                                                 className="hover:bg-primary hover:text-white transition-all duration-300 group px-4"
                                             >
                                                 <Share2 className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                                                Share Article
+                                                Share News
                                             </Button>
 
                                             <Button
