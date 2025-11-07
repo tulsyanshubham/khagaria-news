@@ -8,7 +8,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Newspaper, Calendar, Play, ArrowRight, Sparkles, TrendingUp } from "lucide-react";
+import { Loader2, Newspaper, Calendar, Play, ArrowRight, Sparkles, TrendingUp, User } from "lucide-react";
 import NewsCards from "@/components/NewsCards";
 import {
   homepageNewsAtom,
@@ -89,6 +89,17 @@ export default function HomePage() {
             Explore the latest stories, technology breakthroughs, and trending updates —
             all curated to keep you informed and inspired.
           </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+            <Button
+              onClick={() => (window.location.href = "/about")}
+              className="bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary dark:text-black text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn px-8 py-3"
+            >
+              <User className="w-4 h-4 mr-2" />
+              Know More About Us
+              <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+            </Button>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
